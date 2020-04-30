@@ -1,14 +1,26 @@
 import Foundation
 
+enum ProductName: String {
+    case Minecraft = "Mainecrafti oliginal"
+    case Milhopa = "Milhopã"
+    case Julio = "Julho"
+    case Sorvete = "Sorvetex La Basque"
+    case ComputadorRGB = "Computation RGBzation"
+}
+
 class VendingMachineProduct {
-    var name: String
+    var name: ProductName
     var amount: Int
     var price: Double
 
-    init(name: String, amount: Int, price: Double) {
+    init(name: ProductName, amount: Int, price: Double) {
         self.name = name
         self.amount = amount
         self.price = price
+    }
+
+    func orderStock() {
+        amount += 2
     }
 
     func buy(with money: inout Double) {
@@ -35,13 +47,15 @@ class VendingMachine {
         self.money = 0
     }
     
-    func getProduct(named name: String, with money: Double) throws {
+    func getProduct(named name: ProductName, with money: Double) throws {
         //TODO: receber o dinheiro e salvar em uma variável
         self.money = money
         //TODO: achar o produto que o cliente quer
-        guard let product = estoque.first(where: {$0.name.lowercased() == name.lowercased()}) else { throw VendingMachineError.productNotFound }
+        guard let product = estoque.first(where: {$0.name == name}) else { throw VendingMachineError.productNotFound }
         //TODO: ver se ainda tem esse produto
-        guard product.amount > 0 else { throw VendingMachineError.productUnavailable }
+        guard product.amount > 0 else {
+            product.orderStock()
+            throw VendingMachineError.productUnavailable }
         //TODO: ver se o dinheiro é o suficiente pro produto
         guard product.price <= self.money else { throw VendingMachineError.insufficientFunds }
         //TODO: entregar o produto
@@ -60,14 +74,18 @@ class VendingMachine {
     }
 }
 
-let vendingMachine = VendingMachine(products: [.init(name: "Mainecrafti oliginal", amount: 50, price: 15),
-                                               .init(name: "Milhopã", amount: 100, price: 2),
-                                               .init(name: "Julho", amount: 1, price: 3000),
-                                               .init(name: "Sorvete La Basque", amount: 1, price: 38)])
+let vendingMachine = VendingMachine(products: [.init(name: .Minecraft, amount: 50, price: 15),
+                                               .init(name: .Milhopa, amount: 100, price: 2),
+                                               .init(name: .Julio, amount: 1, price: 3000),
+                                               .init(name: .Sorvete, amount: 1, price: 38)])
 
 for _ in 0...10 {
-    let money = Double.random(in: 10...4000)
-    let product = ["Relampago Marquinhos", "MiLhOpÃ", "Julho", "Computador RGB", "mainecrafti oliginal", "Sorvete la bosque", "sorvete La basque"].randomElement()!
+    let money = Double(Int.random(in: 10...4000))
+    let products: [ProductName] = [.Julio, .Milhopa, .Minecraft, .Sorvete, .ComputadorRGB]
+    guard let product = products.randomElement() else {
+        print("Algo de errado não deu certo")
+        continue
+    }
 
     do {
         print("Quieres comprar un \(product)?")
