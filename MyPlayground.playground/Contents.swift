@@ -36,7 +36,20 @@ enum VendingMachineError: Error {
     case productStuck
 }
 
-//TODO: Definir os erros
+extension VendingMachineError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .productNotFound:
+            return "num tem isso aqui não"
+        case .productUnavailable:
+            return "acabou isso ai"
+        case .produtcStuck:
+            return "o seu produto ficou preso"
+        case .insufficientFunds:
+            return "tá faltando dinheiro nisso ai"
+        }
+    }
+}
 
 class VendingMachine {
     private var estoque: [VendingMachineProduct]
