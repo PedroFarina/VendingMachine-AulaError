@@ -88,9 +88,9 @@ for _ in 0...10 {
     }
 
     do {
-        print("Quieres comprar un \(product)?")
+        print("Quieres comprar un \(product.rawValue)?")
         try vendingMachine.getProduct(named: product, with: money)
-        print("Grats, you comprou um \(product), take \(vendingMachine.getTroco()) de volte")
+        print("Grats, you comprou um \(product.rawValue), take \(vendingMachine.getTroco()) de volte")
     } catch let err as VendingMachineError {
         switch err {
         case .insufficientFunds:
